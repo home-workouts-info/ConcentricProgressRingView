@@ -41,7 +41,7 @@ open class ProgressRingLayer: CAShapeLayer {
     public init(center: CGPoint, radius: CGFloat, width: CGFloat, color: UIColor) {
         super.init()
 
-        let bezier = UIBezierPath(arcCenter: center, radius: radius, startAngle: CGFloat(-Double.pi / 2), endAngle: CGFloat(Double.pi * 2 - Double.pi / 2), clockwise: true)
+        let bezier = UIBezierPath(arcCenter: center, radius: radius, startAngle: CGFloat(-Double.pi / 2), endAngle: CGFloat(Double.pi), clockwise: true)
         delegate = self as? CALayerDelegate
         path = bezier.cgPath
         fillColor = UIColor.clear.cgColor
