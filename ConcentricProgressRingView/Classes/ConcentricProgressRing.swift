@@ -38,7 +38,7 @@ open class ProgressRingLayer: CAShapeLayer {
         }
     }
 
-    public init(center: CGPoint, radius: CGFloat, width: CGFloat, color: UIColor) {
+    public init(center: CGPoint, radius: CGFloat, width: CGFloat, color: UIColor, shadowRadiusValue: CGFloat, shadowOpacityValue: Float) {
         super.init()
 
         let bezier = UIBezierPath(arcCenter: center, radius: radius, startAngle: CGFloat(-Double.pi / 2), endAngle: CGFloat(Double.pi), clockwise: true)
@@ -50,6 +50,11 @@ open class ProgressRingLayer: CAShapeLayer {
         lineCap = CAShapeLayerLineCap.round
         strokeStart = 0
         strokeEnd = 0
+        
+        shadowColor = UIColor.black.cgColor
+        shadowOffset = .zero
+        shadowRadius = shadowRadiusValue
+        shadowOpacity = shadowOpacityValue
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -79,8 +84,8 @@ open class ProgressRingLayer: CAShapeLayer {
 }
 
 public final class CircleLayer: ProgressRingLayer {
-    override init(center: CGPoint, radius: CGFloat, width: CGFloat, color: UIColor) {
-        super.init(center: center, radius: radius, width: width, color: color)
+    override init(center: CGPoint, radius: CGFloat, width: CGFloat, color: UIColor, shadowRadiusValue: CGFloat, shadowOpacityValue: Float) {
+        super.init(center: center, radius: radius, width: width, color: color, shadowRadiusValue: shadowRadiusValue, shadowOpacityValue: shadowOpacityValue)
         progress = 1
     }
 
@@ -102,7 +107,7 @@ public final class ConcentricProgressRingView: UIView, Sequence {
         return nil
     }
 
-    public convenience init(center: CGPoint, radius: CGFloat, margin: CGFloat, rings theRings: [ProgressRing?], defaultColor: UIColor? = UIColor.white, defaultBackgroundColor: UIColor = UIColor.clear, defaultWidth: CGFloat?) throws {
+    public convenience init(center: CGPoint, radius: CGFloat, margin: CGFloat, rings theRings: [ProgressRing?], defaultColor: UIColor? = UIColor.white, defaultBackgroundColor: UIColor = UIColor.clear, defaultWidth: CGFloat?, shadowRadiusValue: CGFloat = 4, shadowOpacityValue: Float = 1) throws {
         var rings: [ProgressRing] = []
 
         for ring in theRings {
@@ -123,10 +128,10 @@ public final class ConcentricProgressRingView: UIView, Sequence {
             rings.append(ring)
         }
 
-        self.init(center: center, radius: radius, margin: margin, rings: rings)
+        self.init(center: center, radius: radius, margin: margin, rings: rings, shadowRadiusValue: shadowRadiusValue, shadowOpacityValue: shadowOpacityValue)
     }
 
-    public init(center: CGPoint, radius: CGFloat, margin: CGFloat, rings: [ProgressRing]) {
+    public init(center: CGPoint, radius: CGFloat, margin: CGFloat, rings: [ProgressRing], shadowRadiusValue: CGFloat, shadowOpacityValue: Float) {
         let frame = CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2)
         let theCenter = CGPoint(x: radius, y: radius)
 
@@ -141,12 +146,12 @@ public final class ConcentricProgressRingView: UIView, Sequence {
             offset = offset + margin + width
 
             if let backgroundColor = ring.backgroundColor {
-                let circle = CircleLayer(center: theCenter, radius: radius, width: width, color: backgroundColor)
+                let circle = CircleLayer(center: theCenter, radius: radius, width: width, color: backgroundColor, shadowRadiusValue: shadowRadiusValue, shadowOpacityValue: shadowOpacityValue)
                 circles.append(circle)
                 layer.addSublayer(circle)
             }
 
-            let arc = ProgressRingLayer(center: theCenter, radius: radius, width: width, color: color)
+            let arc = ProgressRingLayer(center: theCenter, radius: radius, width: width, color: color, shadowRadiusValue: shadowRadiusValue, shadowOpacityValue: shadowOpacityValue)
             arcs.append(arc)
             layer.addSublayer(arc)
         }
